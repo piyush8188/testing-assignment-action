@@ -1,11 +1,19 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'assignment-action'
+description: 'Action to give score to the submitted assignment'
+author: 'acciojob'
 inputs:
-  milliseconds: # change this
+  testRepo: # change this
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Path '
+    default: ''
+  accioToken:
+    required: true
+    default: '${{ secrets.ACCIO_ASGMNT_ACTION_TOKEN }}'
+outputs:
+  totalScore:
+    description: 'Total Score for this assignment'
+  scoreReceived:
+    description: 'Score received by the student'
 runs:
   using: 'node12'
   main: 'dist/index.js'
