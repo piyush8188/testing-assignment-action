@@ -1,14 +1,6 @@
 name: 'assignment-action'
 description: 'Action to give score to the submitted assignment'
 author: 'acciojob'
-inputs:
-  testRepo: # change this
-    required: true
-    description: 'Path '
-    default: ''
-  accioToken:
-    required: true
-    default: '${{ secrets.ACCIO_ASGMNT_ACTION_TOKEN }}'
 outputs:
   totalScore:
     description: 'Total Score for this assignment'
