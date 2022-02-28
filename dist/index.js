@@ -51,20 +51,25 @@ const path_1 = __importDefault(__nccwpck_require__(5622));
 }
 */
 function run() {
-    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const repoName = (_a = process.env['GITHUB_REPOSITORY']) === null || _a === void 0 ? void 0 : _a.split('/')[1];
+            const githubRepo = process.env['GITHUB_REPOSITORY'];
+            if (!githubRepo)
+                throw new Error('No GITHUB_REPOSITORY');
+            const [repoOwner, repoName] = githubRepo.split('/');
             const repoWorkSpace = process.env['GITHUB_WORKSPACE'];
             const token = process.env['ACCIO_ASGMNT_ACTION_TOKEN'];
             if (!token)
                 throw new Error('No token given!');
             if (!repoWorkSpace)
                 throw new Error('No GITHUB_WORKSPACE');
+            if (repoOwner !== 'acciojob')
+                throw new Error('Error not under acciojob');
             if (!repoName)
                 throw new Error('Failed to parse repoName');
             const repoWords = repoName === null || repoName === void 0 ? void 0 : repoName.split('-');
             const studentUserName = repoWords[repoWords.length - 1];
+            process.stdout.write(`token=${token}, repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}`);
             const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
             const accioTestConfig = JSON.parse(accioTestConfigData.toString());
             const query = new URLSearchParams();
@@ -75,15 +80,16 @@ function run() {
             const encodedTestFileData = yield axios_1.default.get('http://localhost:5001/github/action-get-file?' + query.toString());
             const testFileContent = Buffer.from(encodedTestFileData.data, 'base64').toString('utf8');
             fs_1.default.writeFileSync(path_1.default.resolve(repoWorkSpace, 'tests/test.ts'), testFileContent);
-            yield exec.exec('npm install cypress', undefined, {
+            const cypressInstallExitCode = yield exec.exec('npm install cypress', undefined, {
                 cwd: repoWorkSpace
             });
+            process.stdout.write(`Cypress install exit code ${cypressInstallExitCode}`);
             const cypressPath = require.resolve('cypress', {
                 paths: [repoWorkSpace]
             }) || 'cypress';
             const cypress = require(cypressPath);
             const testResults = yield cypress.run();
-            const { data: score } = yield axios_1.default.post('http://localhost:5001/github/action-get-file', {
+            const { data: score } = yield axios_1.default.post('http://localhost:5001/github/get-score', {
                 testResults,
                 studentGituhbUserName: studentUserName
             });
@@ -94,6 +100,7 @@ function run() {
         catch (error) {
             if (error instanceof Error)
                 core.setFailed(error.message);
+            process.stderr.write(`Error: ${error.message}`);
         }
     });
 }
