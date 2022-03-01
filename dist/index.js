@@ -58,6 +58,7 @@ function run() {
             const [repoOwner, repoName] = githubRepo.split('/');
             const repoWorkSpace = process.env['GITHUB_WORKSPACE'];
             const token = process.env['ACCIO_ASGMNT_ACTION_TOKEN'];
+            const ACCIO_API_ENDPOINT = core.getInput('accio_endpoint') || 'http://localhost:5001';
             if (!token)
                 throw new Error('No token given!');
             if (!repoWorkSpace)
@@ -68,7 +69,7 @@ function run() {
                 throw new Error('Failed to parse repoName');
             const repoWords = repoName === null || repoName === void 0 ? void 0 : repoName.split('-');
             const studentUserName = repoWords[repoWords.length - 1];
-            process.stdout.write(`token=${token}, repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}`);
+            process.stdout.write(`token=${token}, repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}\n`);
             const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
             const accioTestConfig = JSON.parse(accioTestConfigData.toString());
             process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
@@ -77,8 +78,9 @@ function run() {
             query.append('filePath', accioTestConfig.pathToFile);
             query.append('token', token);
             // Get the encoded test file contents
-            const encodedTestFileData = yield axios_1.default.get('http://localhost:5001/github/action-get-file?' + query.toString());
+            const encodedTestFileData = yield axios_1.default.get(`${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`);
             const testFileContent = Buffer.from(encodedTestFileData.data, 'base64').toString('utf8');
+            process.stdout.write(`Test file content: \n${testFileContent}`);
             fs_1.default.writeFileSync(path_1.default.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'), testFileContent);
             // const cypressInstallExitCode = await exec.exec(
             //   'npm install cypress',
@@ -94,7 +96,7 @@ function run() {
             const cypress = require(cypressPath);
             const testResults = yield cypress.run();
             process.stdout.write(`TestResults: ${JSON.stringify(testResults)}`);
-            const { data: score } = yield axios_1.default.post('http://localhost:5001/github/get-score', {
+            const { data: score } = yield axios_1.default.post(`${ACCIO_API_ENDPOINT}/github/get-score`, {
                 token,
                 testResults,
                 studentGithubUserName: studentUserName

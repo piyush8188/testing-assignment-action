@@ -19,6 +19,8 @@ async function run(): Promise<void> {
     const [repoOwner, repoName] = githubRepo.split('/');
     const repoWorkSpace: string | undefined = process.env['GITHUB_WORKSPACE'];
     const token = process.env['ACCIO_ASGMNT_ACTION_TOKEN'];
+    const ACCIO_API_ENDPOINT =
+      core.getInput('accio_endpoint') || 'http://localhost:5001';
 
     if (!token) throw new Error('No token given!');
     if (!repoWorkSpace) throw new Error('No GITHUB_WORKSPACE');
@@ -29,7 +31,7 @@ async function run(): Promise<void> {
     const studentUserName = repoWords[repoWords.length - 1];
 
     process.stdout.write(
-      `token=${token}, repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}`
+      `token=${token}, repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}\n`
     );
 
     const accioTestConfigData = fs.readFileSync(
@@ -46,13 +48,15 @@ async function run(): Promise<void> {
 
     // Get the encoded test file contents
     const encodedTestFileData = await axios.get(
-      'http://localhost:5001/github/action-get-file?' + query.toString()
+      `${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`
     );
 
     const testFileContent = Buffer.from(
       encodedTestFileData.data,
       'base64'
     ).toString('utf8');
+
+    process.stdout.write(`Test file content: \n${testFileContent}`);
 
     fs.writeFileSync(
       path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
@@ -80,7 +84,7 @@ async function run(): Promise<void> {
     process.stdout.write(`TestResults: ${JSON.stringify(testResults)}`);
 
     const {data: score} = await axios.post(
-      'http://localhost:5001/github/get-score',
+      `${ACCIO_API_ENDPOINT}/github/get-score`,
       {
         token,
         testResults,
