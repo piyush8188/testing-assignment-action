@@ -1,5 +1,6 @@
 import axios from 'axios';
 import * as core from '@actions/core';
+import * as exec from '@actions/exec';
 import fs from 'fs';
 import path from 'path';
 
@@ -31,7 +32,7 @@ async function run(): Promise<void> {
     const studentUserName = repoWords[repoWords.length - 1];
 
     process.stdout.write(
-      `token=${token}, repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}\n`
+      `repoWorkSpace=${repoWorkSpace}, repoName=${repoName}, studentName=${studentUserName}\n`
     );
 
     const accioTestConfigData = fs.readFileSync(
@@ -56,8 +57,6 @@ async function run(): Promise<void> {
       'base64'
     ).toString('utf8');
 
-    process.stdout.write(`Test file content: \n${testFileContent}`);
-
     fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
       recursive: true
     });
@@ -67,15 +66,11 @@ async function run(): Promise<void> {
       testFileContent
     );
 
-    // const cypressInstallExitCode = await exec.exec(
-    //   'npm install cypress',
-    //   undefined,
-    //   {
-    //     cwd: repoWorkSpace
-    //   }
-    // );
+    const cypressInstallExitCode = await exec.exec('npm install', undefined, {
+      cwd: repoWorkSpace
+    });
 
-    // process.stdout.write(`Cypress install exit code ${cypressInstallExitCode}`);
+    process.stdout.write(`\nnpm install exit code ${cypressInstallExitCode}\n`);
 
     const cypressPath =
       require.resolve('cypress', {
@@ -85,7 +80,7 @@ async function run(): Promise<void> {
     const cypress = require(cypressPath);
     const testResults = await cypress.run();
 
-    process.stdout.write(`TestResults: ${JSON.stringify(testResults)}`);
+    process.stdout.write(`\nEvaluating score...\n`);
 
     const {data: score} = await axios.post(
       `${ACCIO_API_ENDPOINT}/github/get-score`,
