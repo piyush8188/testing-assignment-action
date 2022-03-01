@@ -58,6 +58,10 @@ async function run(): Promise<void> {
 
     process.stdout.write(`Test file content: \n${testFileContent}`);
 
+    fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
+      recursive: true
+    });
+
     fs.writeFileSync(
       path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
       testFileContent

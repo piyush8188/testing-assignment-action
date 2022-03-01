@@ -81,6 +81,9 @@ function run() {
             const encodedTestFileData = yield axios_1.default.get(`${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`);
             const testFileContent = Buffer.from(encodedTestFileData.data, 'base64').toString('utf8');
             process.stdout.write(`Test file content: \n${testFileContent}`);
+            fs_1.default.mkdirSync(path_1.default.resolve(repoWorkSpace, 'cypress/integration/tests'), {
+                recursive: true
+            });
             fs_1.default.writeFileSync(path_1.default.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'), testFileContent);
             // const cypressInstallExitCode = await exec.exec(
             //   'npm install cypress',
