@@ -126,6 +126,7 @@ function run() {
             if (error instanceof Error)
                 core.setFailed(error.message);
             process.stderr.write(`Error: ${error.message}`);
+            process.exit(1);
         }
     });
 }

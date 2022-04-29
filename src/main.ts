@@ -60,10 +60,6 @@ async function run(): Promise<void> {
       query.append('filePath', accioTestConfig.pathToFile);
       query.append('token', token);
 
-      process.stdout.write(
-        `${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`
-      );
-
       // Get the encoded test file contents
       const encodedTestFileData = await axios.get(
         `${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`
@@ -73,8 +69,6 @@ async function run(): Promise<void> {
         encodedTestFileData.data,
         'base64'
       ).toString('utf8');
-
-      process.stdout.write(testFileContent);
 
       fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
         recursive: true
@@ -132,6 +126,7 @@ async function run(): Promise<void> {
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message);
     process.stderr.write(`Error: ${(error as Error).message}`);
+    process.exit(1);
   }
 }
 
