@@ -70,15 +70,24 @@ function run() {
                 throw new Error('Error not under acciojob');
             if (!repoName)
                 throw new Error('Failed to parse repoName');
-            const repoWords = repoName === null || repoName === void 0 ? void 0 : repoName.split('-');
-            const studentUserName = repoWords[repoWords.length - 1];
-            const assignmentName = repoName.substring(0, repoName.lastIndexOf('-'));
-            process.stdout.write(`repoWorkSpace = ${repoWorkSpace}\nrepoName = ${repoName}\nstudentName = ${studentUserName}\nassignmentName = ${assignmentName}\n`);
+            let studentUserName = '';
+            let assignmentName = '';
             const contextPayload = github.context.payload;
+            if (contextPayload.pusher.username) {
+                if (repoName.includes(contextPayload.pusher.username)) {
+                    const indexOfStudentName = repoName.indexOf(contextPayload.pusher.username);
+                    studentUserName = repoName.substring(indexOfStudentName);
+                    assignmentName = repoName.substring(0, indexOfStudentName);
+                }
+            }
+            else if (repoName.includes(contextPayload.pusher.name)) {
+                const indexOfStudentName = repoName.indexOf(contextPayload.pusher.name);
+                studentUserName = repoName.substring(indexOfStudentName);
+                assignmentName = repoName.substring(0, indexOfStudentName);
+            }
+            process.stdout.write(`repoWorkSpace = ${repoWorkSpace}\nrepoName = ${repoName}\nstudentName = ${studentUserName}\nassignmentName = ${assignmentName}\n`);
             process.stdout.write(`Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}`);
-            if ((contextPayload.pusher.username &&
-                contextPayload.pusher.username === studentUserName) ||
-                contextPayload.pusher.name === studentUserName) {
+            if (assignmentName && studentUserName) {
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
                 const accioTestConfig = JSON.parse(accioTestConfigData.toString());
                 process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
@@ -86,11 +95,9 @@ function run() {
                 query.append('repo', accioTestConfig.testRepo);
                 query.append('filePath', accioTestConfig.pathToFile);
                 query.append('token', token);
-                process.stdout.write(`${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`);
                 // Get the encoded test file contents
                 const encodedTestFileData = yield axios_1.default.get(`${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`);
                 const testFileContent = Buffer.from(encodedTestFileData.data, 'base64').toString('utf8');
-                process.stdout.write(testFileContent);
                 fs_1.default.mkdirSync(path_1.default.resolve(repoWorkSpace, 'cypress/integration/tests'), {
                     recursive: true
                 });

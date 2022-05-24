@@ -30,24 +30,34 @@ async function run(): Promise<void> {
     if (repoOwner !== 'acciojob') throw new Error('Error not under acciojob');
     if (!repoName) throw new Error('Failed to parse repoName');
 
-    const repoWords = repoName?.split('-');
-    const studentUserName = repoWords[repoWords.length - 1];
-    const assignmentName = repoName.substring(0, repoName.lastIndexOf('-'));
+    let studentUserName = '';
+    let assignmentName = '';
+
+    const contextPayload = github.context.payload;
+
+    if (contextPayload.pusher.username) {
+      if (repoName.includes(contextPayload.pusher.username)) {
+        const indexOfStudentName = repoName.indexOf(
+          contextPayload.pusher.username
+        );
+        studentUserName = repoName.substring(indexOfStudentName);
+        assignmentName = repoName.substring(0, indexOfStudentName);
+      }
+    } else if (repoName.includes(contextPayload.pusher.name)) {
+      const indexOfStudentName = repoName.indexOf(contextPayload.pusher.name);
+      studentUserName = repoName.substring(indexOfStudentName);
+      assignmentName = repoName.substring(0, indexOfStudentName);
+    }
 
     process.stdout.write(
       `repoWorkSpace = ${repoWorkSpace}\nrepoName = ${repoName}\nstudentName = ${studentUserName}\nassignmentName = ${assignmentName}\n`
     );
 
-    const contextPayload = github.context.payload;
     process.stdout.write(
       `Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}`
     );
 
-    if (
-      (contextPayload.pusher.username &&
-        contextPayload.pusher.username === studentUserName) ||
-      contextPayload.pusher.name === studentUserName
-    ) {
+    if (assignmentName && studentUserName) {
       const accioTestConfigData = fs.readFileSync(
         path.resolve(repoWorkSpace, 'acciotest.json')
       );
