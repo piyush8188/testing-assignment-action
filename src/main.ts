@@ -41,12 +41,12 @@ async function run(): Promise<void> {
           contextPayload.pusher.username
         );
         studentUserName = repoName.substring(indexOfStudentName);
-        assignmentName = repoName.substring(0, indexOfStudentName);
+        assignmentName = repoName.substring(0, indexOfStudentName - 1);
       }
     } else if (repoName.includes(contextPayload.pusher.name)) {
       const indexOfStudentName = repoName.indexOf(contextPayload.pusher.name);
       studentUserName = repoName.substring(indexOfStudentName);
-      assignmentName = repoName.substring(0, indexOfStudentName);
+      assignmentName = repoName.substring(0, indexOfStudentName - 1);
     }
 
     process.stdout.write(
