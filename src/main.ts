@@ -22,7 +22,6 @@ async function run(): Promise<void> {
     const repoWorkSpace: string | undefined = process.env['GITHUB_WORKSPACE'];
     const token = process.env['ACCIO_ASGMNT_ACTION_TOKEN'];
     const ACCIO_API_ENDPOINT =
-      core.getInput('accio_endpoint') ||
       'https://accio-release-1-dot-acciojob-prod.el.r.appspot.com';
 
     if (!token) throw new Error('No token given!');
