@@ -111,18 +111,6 @@ async function run(): Promise<void> {
       const testResults = await cypress.run();
 
       process.stdout.write(`\nEvaluating score...\n`);
-
-      const temp = await axios.post(
-        `${ACCIO_API_ENDPOINT}/github/get-score`,
-        {
-          token,
-          testResults,
-          assignmentName,
-          repoName,
-          studentGithubUserName: studentUserName
-        }
-      );
-      process.stdout.write(temp);
       
       const {data: score} = await axios.post(
         `${ACCIO_API_ENDPOINT}/github/get-score`,
