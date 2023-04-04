@@ -169,7 +169,7 @@ function run() {
                 const questionTypeQuery = new URLSearchParams();
                 questionTypeQuery.append('templateName', assignmentName);
                 const questionTypeData = yield axios_1.default.get(`${ACCIO_API_ENDPOINT}/github/get-question-type?${questionTypeQuery.toString()}`);
-                const questionTypeContent = Buffer.from(questionTypeData.data, 'base64').toString('utf8');
+                const questionTypeContent = questionTypeData.data;
                 process.stdout.write(`question type = ${questionTypeContent}\n`);
                 // console.log(questionTypeContent);
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));

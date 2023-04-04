@@ -110,8 +110,8 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 
 
 
-
-git add .
-git commit -m "testing 3"
-git tag -a -m "testing-assignment-action" v1.4
-git push --follow-tags
+npm run build && npm run package  &&
+git add . && 
+git commit -m "testing 5" && 
+git tag -a -m "testing-assignment-action" v1.6 && 
+git push --follow-tags 

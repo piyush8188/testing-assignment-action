@@ -115,10 +115,8 @@ async function run(): Promise<void> {
         `${ACCIO_API_ENDPOINT}/github/get-question-type?${questionTypeQuery.toString()}`
       );
       
-      const questionTypeContent = Buffer.from(
-        questionTypeData.data,
-        'base64'
-      ).toString('utf8');
+      const questionTypeContent = questionTypeData.data;
+        
        process.stdout.write(
          `question type = ${questionTypeContent}\n`
        );
