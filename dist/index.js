@@ -182,7 +182,9 @@ function run() {
                     repoWorkSpace = repoWorkSpace + '/encrypted';
                     var temp = yield exec.exec('echo', ['$(ls)']);
                     process.stdout.write(`pg1${temp}\n`);
-                    temp = yield exec.exec('cd', ['encrypted']);
+                    temp = yield exec.exec('cd encrypted', undefined, {
+                        cwd: repoWorkSpace
+                    });
                     process.stdout.write(`pg2${temp}\n`);
                     process.stdout.write(`question type = ${questionTypeContent}\n`);
                 }
