@@ -177,12 +177,12 @@ function run() {
                 process.stdout.write(`question type = ${questionTypeContent}\n`);
                 // console.log(questionTypeContent);
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
-                if (questionTypeContent == 'CONTEST') {
-                    yield decrypt(repoWorkSpace + '/enrypted', '', '');
-                    repoWorkSpace = repoWorkSpace + '/encrypted';
-                    yield exec.exec('cd encrypted');
-                    process.stdout.write(`question type = ${questionTypeContent}\n`);
-                }
+                // if (questionTypeContent == 'CONTEST') {
+                yield decrypt(repoWorkSpace + '/enrypted', '', '');
+                repoWorkSpace = repoWorkSpace + '/encrypted';
+                yield exec.exec('cd encrypted');
+                process.stdout.write(`question type = ${questionTypeContent}\n`);
+                // }
                 const accioTestConfig = JSON.parse(accioTestConfigData.toString());
                 process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
                 const query = new URLSearchParams();

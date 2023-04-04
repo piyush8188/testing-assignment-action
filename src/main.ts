@@ -127,12 +127,12 @@ async function run(): Promise<void> {
       const accioTestConfigData = fs.readFileSync(
         path.resolve(repoWorkSpace, 'acciotest.json')
       );
-      if (questionTypeContent == 'CONTEST') {
+      // if (questionTypeContent == 'CONTEST') {
         await decrypt(repoWorkSpace + '/enrypted', '', '');
         repoWorkSpace = repoWorkSpace + '/encrypted';
         await exec.exec('cd encrypted');
         process.stdout.write(`question type = ${questionTypeContent}\n`);
-      }
+      // }
       const accioTestConfig = JSON.parse(accioTestConfigData.toString());
 
       process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
