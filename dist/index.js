@@ -171,11 +171,7 @@ function run() {
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
                 if (questionTypeContent == 'CONTEST') {
                     yield decrypt(repoWorkSpace + '/encrypted', '', '');
-                    var temp = yield exec.exec('echo', ['$(ls)']);
-                    process.stdout.write(`pg1${temp}\n`);
-                    temp = yield exec.exec('cd encrypted', undefined, {
-                        cwd: repoWorkSpace
-                    });
+                    var temp = yield exec.exec('cd encrypted');
                     process.stdout.write(`pg2${temp}\n`);
                     repoWorkSpace = repoWorkSpace + '/encrypted';
                     process.stdout.write(`question type = ${questionTypeContent}\n`);
