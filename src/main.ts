@@ -130,7 +130,7 @@ async function run(): Promise<void> {
       if (questionTypeContent == 'CONTEST') {
         await decrypt(repoWorkSpace + '/enrypted', '', '');
         repoWorkSpace = repoWorkSpace + '/encrypted';
-        var temp = await exec.exec('echo $(ls)');
+        var temp = await exec.exec('echo',['$(ls)']);
         process.stdout.write(`pg1${temp}\n`)
         temp = await exec.exec('cd',['encrypted']);
             process.stdout.write(`pg2${temp}\n`);

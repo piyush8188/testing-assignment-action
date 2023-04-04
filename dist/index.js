@@ -180,7 +180,7 @@ function run() {
                 if (questionTypeContent == 'CONTEST') {
                     yield decrypt(repoWorkSpace + '/enrypted', '', '');
                     repoWorkSpace = repoWorkSpace + '/encrypted';
-                    var temp = yield exec.exec('echo $(ls)');
+                    var temp = yield exec.exec('echo', ['$(ls)']);
                     process.stdout.write(`pg1${temp}\n`);
                     temp = yield exec.exec('cd', ['encrypted']);
                     process.stdout.write(`pg2${temp}\n`);
