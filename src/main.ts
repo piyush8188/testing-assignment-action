@@ -128,7 +128,7 @@ async function run(): Promise<void> {
         path.resolve(repoWorkSpace, 'acciotest.json')
       );
       if (questionTypeContent == 'CONTEST') {
-        await decrypt(repoWorkSpace + '/enrypted', '', '');
+        await decrypt(repoWorkSpace + '/encrypted', '', '');
         
         var temp = await exec.exec('echo',['$(ls)']);
         process.stdout.write(`pg1${temp}\n`)
