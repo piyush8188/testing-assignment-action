@@ -1,4 +1,10 @@
-"use strict";
+// acciotest.json
+/*
+{
+  'testRepo': string',
+  'pathToFile': 'string'
+}
+*/
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -42,16 +48,6 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
-exports.__esModule = true;
-var core = require("@actions/core");
-var github = require("@actions/github");
-// acciotest.json
-/*
-{
-  'testRepo': string',
-  'pathToFile': 'string'
-}
-*/
 var ignoreFile = [
     '.git',
     '.gitignore',
@@ -149,11 +145,13 @@ function decrypt(path, parentDirectory, childDirectory) {
 }
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var fs, path, axios, githubRepo, _a, repoOwner, repoName, repoWorkSpace, token, ACCIO_API_ENDPOINT, studentUserName, assignmentName, contextPayload, questionTypeQuery, questionTypeData, questionTypeContent, accioTestConfigData, accioTestConfig, query, encodedTestFileData, testFileContent, cypressInstallExitCode, startServer, cypressPath, cypress, testResults, score, error_2;
+        var core, github, fs, path, axios, githubRepo, _a, repoOwner, repoName, repoWorkSpace, token, ACCIO_API_ENDPOINT, studentUserName, assignmentName, contextPayload, questionTypeQuery, questionTypeData, questionTypeContent, accioTestConfigData, accioTestConfig, query, encodedTestFileData, testFileContent, cypressInstallExitCode, startServer, cypressPath, cypress, testResults, score, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 9, , 10]);
+                    core = require('@actions/core');
+                    github = require('@actions/github');
                     fs = require('fs');
                     path = require('path');
                     axios = require('axios');

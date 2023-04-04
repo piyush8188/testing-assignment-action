@@ -1,5 +1,4 @@
-import * as core from '@actions/core';
-import * as github from '@actions/github';
+
 
 // acciotest.json
 /*
@@ -63,6 +62,9 @@ async function decrypt(
 
 async function run(): Promise<void> {
   try {
+
+    var core = require('@actions/core');
+    var github = require('@actions/github');
     var fs = require('fs');
     var path = require('path')
     var axios = require('axios');
