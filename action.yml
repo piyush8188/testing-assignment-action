@@ -12,4 +12,4 @@ outputs:
     description: 'Score received by the student'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'src/main.js'
