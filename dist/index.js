@@ -171,7 +171,7 @@ function run() {
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
                 if (questionTypeContent == 'CONTEST') {
                     yield decrypt(repoWorkSpace + '/encrypted', '', '');
-                    repoWorkSpace = repoWorkSpace + '/encrypted';
+                    const encryptedRepoWorkSpace = repoWorkSpace + '/encrypted';
                     process.stdout.write(`question type = ${questionTypeContent}\n`);
                     const accioTestConfig = JSON.parse(accioTestConfigData.toString());
                     process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
@@ -187,11 +187,11 @@ function run() {
                     });
                     fs_1.default.writeFileSync(path_1.default.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'), testFileContent);
                     const cypressInstallExitCode = yield exec.exec('npm install', undefined, {
-                        cwd: repoWorkSpace
+                        cwd: encryptedRepoWorkSpace
                     });
                     process.stdout.write(`\nnpm install --prefix ./encrypted exit code ${cypressInstallExitCode}\n`);
                     const startServer = exec.exec('npm start', undefined, {
-                        cwd: repoWorkSpace
+                        cwd: encryptedRepoWorkSpace
                     });
                     process.stdout.write(`\nnpm start --prefix ./encrypted exit code ${startServer}`);
                 }

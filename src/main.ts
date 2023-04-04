@@ -124,7 +124,7 @@ async function run(): Promise<void> {
       if (questionTypeContent == 'CONTEST') {
         await decrypt(repoWorkSpace + '/encrypted', '', '');
         
-        repoWorkSpace = repoWorkSpace + '/encrypted';
+        const encryptedRepoWorkSpace = repoWorkSpace + '/encrypted';
         process.stdout.write(`question type = ${questionTypeContent}\n`);
         const accioTestConfig = JSON.parse(accioTestConfigData.toString());
 
@@ -145,12 +145,18 @@ async function run(): Promise<void> {
           'base64'
         ).toString('utf8');
 
-        fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
-          recursive: true
-        });
+        fs.mkdirSync(
+          path.resolve(repoWorkSpace, 'cypress/integration/tests'),
+          {
+            recursive: true
+          }
+        );
 
         fs.writeFileSync(
-          path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
+          path.resolve(
+            repoWorkSpace,
+            'cypress/integration/tests/test.spec.js'
+          ),
           testFileContent
         );
 
@@ -158,7 +164,7 @@ async function run(): Promise<void> {
           'npm install',
           undefined,
           {
-            cwd: repoWorkSpace
+            cwd: encryptedRepoWorkSpace
           }
         );
 
@@ -166,13 +172,9 @@ async function run(): Promise<void> {
           `\nnpm install --prefix ./encrypted exit code ${cypressInstallExitCode}\n`
         );
 
-        const startServer = exec.exec(
-          'npm start',
-          undefined,
-          {
-            cwd: repoWorkSpace
-          }
-        );
+        const startServer = exec.exec('npm start', undefined, {
+          cwd: encryptedRepoWorkSpace
+        });
 
         process.stdout.write(
           `\nnpm start --prefix ./encrypted exit code ${startServer}`
