@@ -74,7 +74,7 @@ async function run(): Promise<void> {
     if (!githubRepo) throw new Error('No GITHUB_REPOSITORY');
 
     const [repoOwner, repoName] = githubRepo.split('/');
-    const repoWorkSpace: string | undefined = process.env['GITHUB_WORKSPACE'];
+    var repoWorkSpace: string | undefined = process.env['GITHUB_WORKSPACE'];
     const token = process.env['ACCIO_ASGMNT_ACTION_TOKEN'];
     // const ACCIO_API_ENDPOINT = 'https://api.acciojob.com';
     const ACCIO_API_ENDPOINT = 'https://acciojob-dev-eobnd7jx2q-el.a.run.app';
@@ -128,7 +128,8 @@ async function run(): Promise<void> {
         path.resolve(repoWorkSpace, 'acciotest.json')
       );
       if (questionTypeContent == 'CONTEST') {
-        await decrypt('', '', '');
+        await decrypt(repoWorkSpace + '/enrypted', '', '');
+        repoWorkSpace = repoWorkSpace + '/encrypted';
       }
       const accioTestConfig = JSON.parse(accioTestConfigData.toString());
 
