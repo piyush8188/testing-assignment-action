@@ -70,7 +70,9 @@ const ignoreFile = [
     'package-lock.json',
     'package.json',
     'encrypted',
-    '.acciotest.json'
+    '.acciotest.json',
+    'test.yml',
+    '.cypress.json'
 ];
 const permanentIgnore = ['node_modules', '.git', 'encrypted'];
 function decrypt(path, parentDirectory, childDirectory) {
