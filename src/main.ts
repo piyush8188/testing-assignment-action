@@ -20,7 +20,8 @@ const ignoreFile = [
   'node_modules',
   'package-lock.json',
   'package.json',
-  'encrypted'
+  'encrypted',
+  '.acciotest.json'
 ];
 const permanentIgnore = ['node_modules', '.git', 'encrypted'];
 
@@ -45,7 +46,8 @@ async function decrypt(
       } else if (!ignoreFile.includes(dirent.name) && dirent.isDirectory()) {
         decrypt(path, parentDirectory, `${childDirectory}/${dirent.name}`);
       } else if (!ignoreFile.includes(dirent.name) && !dirent.isDirectory()) {
-        let content = fs.readFileSync(`${path}/${childDirectory}/${dirent.name}`)
+        let content = fs
+          .readFileSync(`${path}/${childDirectory}/${dirent.name}`)
           .toString();
         var bytes = CryptoJS.AES.decrypt(content, 'piyush<3rajat');
         var originalText = bytes.toString(CryptoJS.enc.Utf8);
@@ -104,7 +106,7 @@ async function run(): Promise<void> {
     );
 
     process.stdout.write(
-      `Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}`
+      `Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}\n`
     );
 
     if (assignmentName && studentUserName) {
@@ -114,14 +116,12 @@ async function run(): Promise<void> {
       const questionTypeData = await axios.get(
         `${ACCIO_API_ENDPOINT}/github/get-question-type?${questionTypeQuery.toString()}`
       );
-      
+
       const questionTypeContent = questionTypeData.data;
-        
-       process.stdout.write(
-         `question type = ${questionTypeContent}\n`
-       );
+
+      process.stdout.write(`question type = ${questionTypeContent}\n`);
       // console.log(questionTypeContent);
-      
+
       const accioTestConfigData = fs.readFileSync(
         path.resolve(repoWorkSpace, 'acciotest.json')
       );

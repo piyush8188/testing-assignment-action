@@ -69,7 +69,8 @@ const ignoreFile = [
     'node_modules',
     'package-lock.json',
     'package.json',
-    'encrypted'
+    'encrypted',
+    '.acciotest.json'
 ];
 const permanentIgnore = ['node_modules', '.git', 'encrypted'];
 function decrypt(path, parentDirectory, childDirectory) {
@@ -99,7 +100,8 @@ function decrypt(path, parentDirectory, childDirectory) {
                             decrypt(path, parentDirectory, `${childDirectory}/${dirent.name}`);
                         }
                         else if (!ignoreFile.includes(dirent.name) && !dirent.isDirectory()) {
-                            let content = fs_1.default.readFileSync(`${path}/${childDirectory}/${dirent.name}`)
+                            let content = fs_1.default
+                                .readFileSync(`${path}/${childDirectory}/${dirent.name}`)
                                 .toString();
                             var bytes = crypto_js_1.default.AES.decrypt(content, 'piyush<3rajat');
                             var originalText = bytes.toString(crypto_js_1.default.enc.Utf8);
@@ -164,7 +166,7 @@ function run() {
                 assignmentName = repoName.substring(0, indexOfStudentName - 1);
             }
             process.stdout.write(`repoWorkSpace = ${repoWorkSpace}\nrepoName = ${repoName}\nstudentName = ${studentUserName}\nassignmentName = ${assignmentName}\n`);
-            process.stdout.write(`Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}`);
+            process.stdout.write(`Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}\n`);
             if (assignmentName && studentUserName) {
                 const questionTypeQuery = new URLSearchParams();
                 questionTypeQuery.append('templateName', assignmentName);
