@@ -35,13 +35,7 @@ async function decrypt(
   try {
     const dir = await fs.promises.opendir(`${path}/${childDirectory}`);
     const newFilePath = `${path}/${parentDirectory}/${childDirectory}`;
-    fs.mkdir(newFilePath, (error: any) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('New Directory created successfully !!');
-      }
-    });
+    
     for await (const dirent of dir) {
       if (dirent.name === parentDirectory) {
         continue;

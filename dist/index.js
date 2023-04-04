@@ -81,14 +81,6 @@ function decrypt(path, parentDirectory, childDirectory) {
         try {
             const dir = yield fs_1.default.promises.opendir(`${path}/${childDirectory}`);
             const newFilePath = `${path}/${parentDirectory}/${childDirectory}`;
-            fs_1.default.mkdir(newFilePath, (error) => {
-                if (error) {
-                    console.log(error);
-                }
-                else {
-                    console.log('New Directory created successfully !!');
-                }
-            });
             try {
                 for (var _d = true, dir_1 = __asyncValues(dir), dir_1_1; dir_1_1 = yield dir_1.next(), _a = dir_1_1.done, !_a;) {
                     _c = dir_1_1.value;
