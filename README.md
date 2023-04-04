@@ -112,8 +112,8 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 
 npm run build && npm run package  &&
 git add . && 
-git commit -m "testing 11" && 
-git tag -a -m "testing-assignment-action" v1.12 && 
+git commit -m "testing 12" && 
+git tag -a -m "testing-assignment-action" v1.13 && 
 git push --follow-tags 
 
 
