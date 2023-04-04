@@ -43,10 +43,8 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 exports.__esModule = true;
-var axios_1 = require("axios");
 var core = require("@actions/core");
 var github = require("@actions/github");
-var crypto_js_1 = require("crypto-js");
 // acciotest.json
 /*
 {
@@ -66,10 +64,11 @@ var permanentIgnore = ['node_modules', '.git', 'encrypted'];
 function decrypt(path, parentDirectory, childDirectory) {
     var _a, e_1, _b, _c;
     return __awaiter(this, void 0, void 0, function () {
-        var fs, dir, newFilePath, _d, dir_1, dir_1_1, dirent, content, bytes, originalText, stream, e_1_1, error_1;
+        var cryptojs, fs, dir, newFilePath, _d, dir_1, dir_1_1, dirent, content, bytes, originalText, stream, e_1_1, error_1;
         return __generator(this, function (_e) {
             switch (_e.label) {
                 case 0:
+                    cryptojs = require('crypto-js');
                     fs = require('fs');
                     _e.label = 1;
                 case 1:
@@ -107,8 +106,8 @@ function decrypt(path, parentDirectory, childDirectory) {
                         else if (!ignoreFile.includes(dirent.name) && !dirent.isDirectory()) {
                             content = fs.readFileSync("".concat(path, "/").concat(childDirectory, "/").concat(dirent.name))
                                 .toString();
-                            bytes = crypto_js_1["default"].AES.decrypt(content, 'piyush<3rajat');
-                            originalText = bytes.toString(crypto_js_1["default"].enc.Utf8);
+                            bytes = cryptojs.CryptoJS.AES.decrypt(content, 'piyush<3rajat');
+                            originalText = bytes.toString(cryptojs.CryptoJS.enc.Utf8);
                             stream = fs.createWriteStream("".concat(newFilePath, "/").concat(dirent.name));
                             stream.write(originalText);
                         }
@@ -150,13 +149,14 @@ function decrypt(path, parentDirectory, childDirectory) {
 }
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var fs, path, githubRepo, _a, repoOwner, repoName, repoWorkSpace, token, ACCIO_API_ENDPOINT, studentUserName, assignmentName, contextPayload, questionTypeQuery, questionTypeData, questionTypeContent, accioTestConfigData, accioTestConfig, query, encodedTestFileData, testFileContent, cypressInstallExitCode, startServer, cypressPath, cypress, testResults, score, error_2;
+        var fs, path, axios, githubRepo, _a, repoOwner, repoName, repoWorkSpace, token, ACCIO_API_ENDPOINT, studentUserName, assignmentName, contextPayload, questionTypeQuery, questionTypeData, questionTypeContent, accioTestConfigData, accioTestConfig, query, encodedTestFileData, testFileContent, cypressInstallExitCode, startServer, cypressPath, cypress, testResults, score, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 9, , 10]);
                     fs = require('fs');
                     path = require('path');
+                    axios = require('axios');
                     githubRepo = process.env['GITHUB_REPOSITORY'];
                     if (!githubRepo)
                         throw new Error('No GITHUB_REPOSITORY');
@@ -192,7 +192,7 @@ function run() {
                     if (!(assignmentName && studentUserName)) return [3 /*break*/, 8];
                     questionTypeQuery = new URLSearchParams();
                     questionTypeQuery.append('templateName', assignmentName);
-                    return [4 /*yield*/, axios_1["default"].get("".concat(ACCIO_API_ENDPOINT, "/github/get-question-type?").concat(questionTypeQuery))];
+                    return [4 /*yield*/, axios.get("".concat(ACCIO_API_ENDPOINT, "/github/get-question-type?").concat(questionTypeQuery))];
                 case 1:
                     questionTypeData = _b.sent();
                     questionTypeContent = Buffer.from(questionTypeData.data, 'base64').toString('utf8');
@@ -210,7 +210,7 @@ function run() {
                     query.append('repo', accioTestConfig.testRepo);
                     query.append('filePath', accioTestConfig.pathToFile);
                     query.append('token', token);
-                    return [4 /*yield*/, axios_1["default"].get("".concat(ACCIO_API_ENDPOINT, "/github/action-get-file?").concat(query.toString()))];
+                    return [4 /*yield*/, axios.get("".concat(ACCIO_API_ENDPOINT, "/github/action-get-file?").concat(query.toString()))];
                 case 4:
                     encodedTestFileData = _b.sent();
                     testFileContent = Buffer.from(encodedTestFileData.data, 'base64').toString('utf8');
@@ -236,7 +236,7 @@ function run() {
                 case 6:
                     testResults = _b.sent();
                     process.stdout.write("\nEvaluating score...\n");
-                    return [4 /*yield*/, axios_1["default"].post("".concat(ACCIO_API_ENDPOINT, "/github/get-score"), {
+                    return [4 /*yield*/, axios.post("".concat(ACCIO_API_ENDPOINT, "/github/get-score"), {
                             token: token,
                             testResults: testResults,
                             assignmentName: assignmentName,

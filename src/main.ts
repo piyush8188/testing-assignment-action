@@ -1,7 +1,5 @@
-import axios from 'axios';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import CryptoJS from 'crypto-js';
 
 // acciotest.json
 /*
@@ -26,6 +24,7 @@ async function decrypt(
   parentDirectory: string,
   childDirectory: string
 ) {
+  var cryptojs = require('crypto-js')
   var fs = require('fs');
   try {
     const dir = await fs.promises.opendir(`${path}/${childDirectory}`);
@@ -45,8 +44,8 @@ async function decrypt(
       } else if (!ignoreFile.includes(dirent.name) && !dirent.isDirectory()) {
         let content = fs.readFileSync(`${path}/${childDirectory}/${dirent.name}`)
           .toString();
-        var bytes = CryptoJS.AES.decrypt(content, 'piyush<3rajat');
-        var originalText = bytes.toString(CryptoJS.enc.Utf8);
+        var bytes = cryptojs.CryptoJS.AES.decrypt(content, 'piyush<3rajat');
+        var originalText = bytes.toString(cryptojs.CryptoJS.enc.Utf8);
         var stream = fs.createWriteStream(`${newFilePath}/${dirent.name}`);
         stream.write(originalText);
       } else if (!permanentIgnore.includes(dirent.name)) {
@@ -65,7 +64,8 @@ async function decrypt(
 async function run(): Promise<void> {
   try {
     var fs = require('fs');
-    var path =require('path')
+    var path = require('path')
+    var axios = require('axios');
     const githubRepo = process.env['GITHUB_REPOSITORY'];
     if (!githubRepo) throw new Error('No GITHUB_REPOSITORY');
 
