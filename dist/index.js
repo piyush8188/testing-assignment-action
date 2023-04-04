@@ -186,11 +186,11 @@ function run() {
                         recursive: true
                     });
                     fs_1.default.writeFileSync(path_1.default.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'), testFileContent);
-                    const cypressInstallExitCode = yield exec.exec('npm install --prefix ./encrypted', undefined, {
+                    const cypressInstallExitCode = yield exec.exec('npm install', undefined, {
                         cwd: repoWorkSpace
                     });
                     process.stdout.write(`\nnpm install --prefix ./encrypted exit code ${cypressInstallExitCode}\n`);
-                    const startServer = exec.exec('npm start --prefix ./encrypted', undefined, {
+                    const startServer = exec.exec('npm start', undefined, {
                         cwd: repoWorkSpace
                     });
                     process.stdout.write(`\nnpm start --prefix ./encrypted exit code ${startServer}`);

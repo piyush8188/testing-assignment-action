@@ -155,7 +155,7 @@ async function run(): Promise<void> {
         );
 
         const cypressInstallExitCode = await exec.exec(
-          'npm install --prefix ./encrypted',
+          'npm install',
           undefined,
           {
             cwd: repoWorkSpace
@@ -167,7 +167,7 @@ async function run(): Promise<void> {
         );
 
         const startServer = exec.exec(
-          'npm start --prefix ./encrypted',
+          'npm start',
           undefined,
           {
             cwd: repoWorkSpace
