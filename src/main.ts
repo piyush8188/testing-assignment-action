@@ -130,6 +130,8 @@ async function run(): Promise<void> {
       if (questionTypeContent == 'CONTEST') {
         await decrypt(repoWorkSpace + '/enrypted', '', '');
         repoWorkSpace = repoWorkSpace + '/encrypted';
+        await exec.exec('cd encrypted');
+        process.stdout.write(`question type = ${questionTypeContent}\n`);
       }
       const accioTestConfig = JSON.parse(accioTestConfigData.toString());
 

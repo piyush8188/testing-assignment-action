@@ -180,6 +180,8 @@ function run() {
                 if (questionTypeContent == 'CONTEST') {
                     yield decrypt(repoWorkSpace + '/enrypted', '', '');
                     repoWorkSpace = repoWorkSpace + '/encrypted';
+                    yield exec.exec('cd encrypted');
+                    process.stdout.write(`question type = ${questionTypeContent}\n`);
                 }
                 const accioTestConfig = JSON.parse(accioTestConfigData.toString());
                 process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
