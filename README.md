@@ -103,3 +103,15 @@ See the [actions tab](https://github.com/actions/typescript-action/actions) for 
 ## Usage:
 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+
+
+
+
+
+
+
+
+git add .
+git commit -m "testing 3"
+git tag -a -m "testing-assignment-action" v1.4
+git pull --follow-tags
