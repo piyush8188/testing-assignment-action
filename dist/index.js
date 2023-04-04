@@ -169,6 +169,7 @@ function run() {
                 process.stdout.write(`question type = ${questionTypeContent}\n`);
                 // console.log(questionTypeContent);
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
+                var cypressPath;
                 if (questionTypeContent == 'CONTEST') {
                     yield decrypt(repoWorkSpace + '/encrypted', '', '');
                     const encryptedRepoWorkSpace = repoWorkSpace + '/encrypted';
@@ -194,6 +195,10 @@ function run() {
                         cwd: encryptedRepoWorkSpace
                     });
                     process.stdout.write(`\nnpm start --prefix ./encrypted exit code ${startServer}`);
+                    cypressPath =
+                        require.resolve('cypress', {
+                            paths: [encryptedRepoWorkSpace]
+                        }) || 'cypress';
                 }
                 else {
                     const accioTestConfig = JSON.parse(accioTestConfigData.toString());
@@ -217,10 +222,11 @@ function run() {
                         cwd: repoWorkSpace
                     });
                     process.stdout.write(`\nnpm start exit code ${startServer}`);
+                    cypressPath =
+                        require.resolve('cypress', {
+                            paths: [repoWorkSpace]
+                        }) || 'cypress';
                 }
-                const cypressPath = require.resolve('cypress', {
-                    paths: [repoWorkSpace]
-                }) || 'cypress';
                 const cypress = require(cypressPath);
                 const testResults = yield cypress.run();
                 process.stdout.write(`\nEvaluating score...\n`);

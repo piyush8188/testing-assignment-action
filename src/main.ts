@@ -35,7 +35,7 @@ async function decrypt(
   try {
     const dir = await fs.promises.opendir(`${path}/${childDirectory}`);
     const newFilePath = `${path}/${parentDirectory}/${childDirectory}`;
-    
+
     for await (const dirent of dir) {
       if (dirent.name === parentDirectory) {
         continue;
@@ -121,9 +121,10 @@ async function run(): Promise<void> {
       const accioTestConfigData = fs.readFileSync(
         path.resolve(repoWorkSpace, 'acciotest.json')
       );
+      var cypressPath;
       if (questionTypeContent == 'CONTEST') {
         await decrypt(repoWorkSpace + '/encrypted', '', '');
-        
+
         const encryptedRepoWorkSpace = repoWorkSpace + '/encrypted';
         process.stdout.write(`question type = ${questionTypeContent}\n`);
         const accioTestConfig = JSON.parse(accioTestConfigData.toString());
@@ -145,18 +146,12 @@ async function run(): Promise<void> {
           'base64'
         ).toString('utf8');
 
-        fs.mkdirSync(
-          path.resolve(repoWorkSpace, 'cypress/integration/tests'),
-          {
-            recursive: true
-          }
-        );
+        fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
+          recursive: true
+        });
 
         fs.writeFileSync(
-          path.resolve(
-            repoWorkSpace,
-            'cypress/integration/tests/test.spec.js'
-          ),
+          path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
           testFileContent
         );
 
@@ -179,6 +174,10 @@ async function run(): Promise<void> {
         process.stdout.write(
           `\nnpm start --prefix ./encrypted exit code ${startServer}`
         );
+        cypressPath =
+          require.resolve('cypress', {
+            paths: [encryptedRepoWorkSpace]
+          }) || 'cypress';
       } else {
         const accioTestConfig = JSON.parse(accioTestConfigData.toString());
 
@@ -225,13 +224,11 @@ async function run(): Promise<void> {
         });
 
         process.stdout.write(`\nnpm start exit code ${startServer}`);
+        cypressPath =
+          require.resolve('cypress', {
+            paths: [repoWorkSpace]
+          }) || 'cypress';
       }
-      
-
-      const cypressPath =
-        require.resolve('cypress', {
-          paths: [repoWorkSpace]
-        }) || 'cypress';
 
       const cypress = require(cypressPath);
       const testResults = await cypress.run();
