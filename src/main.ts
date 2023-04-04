@@ -124,52 +124,107 @@ async function run(): Promise<void> {
       if (questionTypeContent == 'CONTEST') {
         await decrypt(repoWorkSpace + '/encrypted', '', '');
         
-        var temp = await exec.exec('cd encrypted');
-        process.stdout.write(`pg2${temp}\n`);
-        repoWorkSpace = repoWorkSpace + '/encrypted';
+        // repoWorkSpace = repoWorkSpace + '/encrypted';
         process.stdout.write(`question type = ${questionTypeContent}\n`);
+        const accioTestConfig = JSON.parse(accioTestConfigData.toString());
+
+        process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
+
+        const query = new URLSearchParams();
+        query.append('repo', accioTestConfig.testRepo);
+        query.append('filePath', accioTestConfig.pathToFile);
+        query.append('token', token);
+
+        // Get the encoded test file contents
+        const encodedTestFileData = await axios.get(
+          `${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`
+        );
+
+        const testFileContent = Buffer.from(
+          encodedTestFileData.data,
+          'base64'
+        ).toString('utf8');
+
+        fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
+          recursive: true
+        });
+
+        fs.writeFileSync(
+          path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
+          testFileContent
+        );
+
+        const cypressInstallExitCode = await exec.exec(
+          'npm install --prefix ./encrypted',
+          undefined,
+          {
+            cwd: repoWorkSpace
+          }
+        );
+
+        process.stdout.write(
+          `\nnpm install --prefix ./encrypted exit code ${cypressInstallExitCode}\n`
+        );
+
+        const startServer = exec.exec(
+          'npm start --prefix ./encrypted',
+          undefined,
+          {
+            cwd: repoWorkSpace
+          }
+        );
+
+        process.stdout.write(
+          `\nnpm start --prefix ./encrypted exit code ${startServer}`
+        );
+      } else {
+        const accioTestConfig = JSON.parse(accioTestConfigData.toString());
+
+        process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
+
+        const query = new URLSearchParams();
+        query.append('repo', accioTestConfig.testRepo);
+        query.append('filePath', accioTestConfig.pathToFile);
+        query.append('token', token);
+
+        // Get the encoded test file contents
+        const encodedTestFileData = await axios.get(
+          `${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`
+        );
+
+        const testFileContent = Buffer.from(
+          encodedTestFileData.data,
+          'base64'
+        ).toString('utf8');
+
+        fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
+          recursive: true
+        });
+
+        fs.writeFileSync(
+          path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
+          testFileContent
+        );
+
+        const cypressInstallExitCode = await exec.exec(
+          'npm install',
+          undefined,
+          {
+            cwd: repoWorkSpace
+          }
+        );
+
+        process.stdout.write(
+          `\nnpm install exit code ${cypressInstallExitCode}\n`
+        );
+
+        const startServer = exec.exec('npm start', undefined, {
+          cwd: repoWorkSpace
+        });
+
+        process.stdout.write(`\nnpm start exit code ${startServer}`);
       }
-      const accioTestConfig = JSON.parse(accioTestConfigData.toString());
-
-      process.stdout.write(`Test Config: ${accioTestConfigData.toString()}`);
-
-      const query = new URLSearchParams();
-      query.append('repo', accioTestConfig.testRepo);
-      query.append('filePath', accioTestConfig.pathToFile);
-      query.append('token', token);
-
-      // Get the encoded test file contents
-      const encodedTestFileData = await axios.get(
-        `${ACCIO_API_ENDPOINT}/github/action-get-file?${query.toString()}`
-      );
-
-      const testFileContent = Buffer.from(
-        encodedTestFileData.data,
-        'base64'
-      ).toString('utf8');
-
-      fs.mkdirSync(path.resolve(repoWorkSpace, 'cypress/integration/tests'), {
-        recursive: true
-      });
-
-      fs.writeFileSync(
-        path.resolve(repoWorkSpace, 'cypress/integration/tests/test.spec.js'),
-        testFileContent
-      );
-
-      const cypressInstallExitCode = await exec.exec('npm install', undefined, {
-        cwd: repoWorkSpace
-      });
-
-      process.stdout.write(
-        `\nnpm install exit code ${cypressInstallExitCode}\n`
-      );
-
-      const startServer = exec.exec('npm start', undefined, {
-        cwd: repoWorkSpace
-      });
-
-      process.stdout.write(`\nnpm start exit code ${startServer}`);
+      
 
       const cypressPath =
         require.resolve('cypress', {
