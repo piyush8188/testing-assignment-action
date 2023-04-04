@@ -148,32 +148,29 @@ function run() {
                 throw new Error('Error not under acciojob');
             if (!repoName)
                 throw new Error('Failed to parse repoName');
-            let studentUserName = 'A';
-            let assignmentName = 'wait-for-multiple-promises';
+            let studentUserName = '';
+            let assignmentName = '';
             const contextPayload = github.context.payload;
-            // if (contextPayload.pusher.username) {
-            //   if (repoName.includes(contextPayload.pusher.username)) {
-            //     const indexOfStudentName = repoName.indexOf(
-            //       contextPayload.pusher.username
-            //     );
-            //     studentUserName = repoName.substring(indexOfStudentName);
-            //     assignmentName = repoName.substring(0, indexOfStudentName - 1);
-            //   }
-            // } else if (repoName.includes(contextPayload.pusher.name)) {
-            //   const indexOfStudentName = repoName.indexOf(contextPayload.pusher.name);
-            //   studentUserName = repoName.substring(indexOfStudentName);
-            //   assignmentName = repoName.substring(0, indexOfStudentName - 1);
-            // }
+            if (contextPayload.pusher.username) {
+                if (repoName.includes(contextPayload.pusher.username)) {
+                    const indexOfStudentName = repoName.indexOf(contextPayload.pusher.username);
+                    studentUserName = repoName.substring(indexOfStudentName);
+                    assignmentName = repoName.substring(0, indexOfStudentName - 1);
+                }
+            }
+            else if (repoName.includes(contextPayload.pusher.name)) {
+                const indexOfStudentName = repoName.indexOf(contextPayload.pusher.name);
+                studentUserName = repoName.substring(indexOfStudentName);
+                assignmentName = repoName.substring(0, indexOfStudentName - 1);
+            }
             process.stdout.write(`repoWorkSpace = ${repoWorkSpace}\nrepoName = ${repoName}\nstudentName = ${studentUserName}\nassignmentName = ${assignmentName}\n`);
-            // process.stdout.write(
-            //   `Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}`
-            // );
+            process.stdout.write(`Pusher Username = ${contextPayload.pusher.username}\nPusher Name = ${contextPayload.pusher.name}`);
             if (assignmentName && studentUserName) {
                 const questionTypeQuery = new URLSearchParams();
                 questionTypeQuery.append('templateName', assignmentName);
-                const questionTypeData = yield axios_1.default.get(`${ACCIO_API_ENDPOINT}/github/get-question-type?${questionTypeQuery}`);
+                const questionTypeData = yield axios_1.default.get(`${ACCIO_API_ENDPOINT}/github/get-question-type?${questionTypeQuery.toString()}`);
                 const questionTypeContent = Buffer.from(questionTypeData.data, 'base64').toString('utf8');
-                process.stdout.write(`${questionTypeContent}`);
+                process.stdout.write(`question type = ${questionTypeContent}\n`);
                 // console.log(questionTypeContent);
                 const accioTestConfigData = fs_1.default.readFileSync(path_1.default.resolve(repoWorkSpace, 'acciotest.json'));
                 if (questionTypeContent == 'CONTEST') {

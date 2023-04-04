@@ -114,4 +114,4 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 git add .
 git commit -m "testing 3"
 git tag -a -m "testing-assignment-action" v1.4
-git pull --follow-tags
+git push --follow-tags
